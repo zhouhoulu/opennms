@@ -45,6 +45,7 @@
                                 <feature>opennms-syslogd-listener-nio</feature>
                                 <feature>opennms-syslogd-handler-minion</feature>
                                 <feature>opennms-syslogd-handler-kafka</feature>
+                                <feature>minion-heartbeat</feature>
                             </features>
                             <repository>target/maven-repo</repository>
                         </configuration>

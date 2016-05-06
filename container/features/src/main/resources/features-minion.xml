@@ -28,4 +28,9 @@
       <feature>minion-core-api</feature>
       <bundle>blueprint:mvn:org.opennms.features/org.opennms.features.discovery/${project.version}/xml/blueprint-discovery-distPollerDaoMinion</bundle>
     </feature>
+
+    <feature name="minion-heartbeat" description="OpenNMS :: Minion :: HeartBeat" version="${project.version}">
+      <bundle>blueprint:mvn:org.opennms.features.minion/core-impl/${project.version}/xml/blueprint-heartbeat-minion</bundle>
+      <feature>minion-core-api</feature>
+    </feature>
 </features>

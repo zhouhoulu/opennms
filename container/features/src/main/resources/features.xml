@@ -535,6 +535,12 @@
       <feature>opennms-discovery</feature>
       <bundle>blueprint:mvn:org.opennms.features/org.opennms.features.discovery/${project.version}/xml/blueprint-discovery</bundle>
     </feature>
+    
+    
+    <feature name="opennms-heartbeat" description="OpenNMS :: Discovery :: HeartBeat" version="${project.version}">
+      <bundle>blueprint:mvn:org.opennms.features/org.opennms.features.discovery/${project.version}/xml/blueprint-heartbeat</bundle>
+    </feature>
+    
 
     <feature name="opennms-events-api" description="OpenNMS :: Events API" version="${project.version}">
       <feature version="[4.0,4.1)">spring</feature>

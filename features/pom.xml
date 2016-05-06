@@ -37,6 +37,9 @@
 
     <!-- Discovery -->
     <module>discovery</module>
+    
+    <!-- Heartbeat -->
+    <module>heartbeat</module>
 
     <!-- OpenNMS Reporting API and implementations -->
     <module>reporting</module>

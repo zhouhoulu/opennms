@@ -216,6 +216,7 @@
             <feature>opennms-syslogd-handler-default</feature>
             <feature>opennms-syslogd-handler-kafka</feature>
             <feature>opennms-syslogd-handler-minion</feature>
+            <feature>opennms-heartbeat</feature>
             <!-- <feature>opennms-webapp</feature> -->
             <feature>org.json</feature>
             <feature>postgresql</feature>
