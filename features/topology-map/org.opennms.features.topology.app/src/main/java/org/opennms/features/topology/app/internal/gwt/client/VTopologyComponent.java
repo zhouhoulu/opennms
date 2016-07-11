@@ -323,7 +323,6 @@ public class VTopologyComponent extends Composite implements SVGTopologyMap, Top
 
 				@Override
 				public D3 run(D3 selection) {
-                    consoleLog(selection);
                     return selection.on(D3Events.CLICK.event(), getClickHandler())
                             .on(D3Events.CONTEXT_MENU.event(), getContextMenuHandler())
                             .on(D3Events.MOUSE_OVER.event(), getVertexTooltipHandler())
@@ -415,6 +414,17 @@ public class VTopologyComponent extends Composite implements SVGTopologyMap, Top
 	private int m_height;
 	private String m_activeTool;
 
+    // Each size change will invoke a onResize(ResizeEvent).
+    // This has a huge impact on performance.
+    // Therefore the call is wrapped by a timer with a certain delay
+    // to wait before making the request.
+    final Timer resizeTimer = new Timer() {
+        @Override
+        public void run() {
+            consoleLog("Resize triggered.");
+            sendPhysicalDimensions();
+        }
+    };
 
 	public VTopologyComponent() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -526,25 +536,13 @@ public class VTopologyComponent extends Composite implements SVGTopologyMap, Top
 		setTopologyViewRenderer(m_graphDrawer);
 
         m_windowResizeRegistration = Window.addResizeHandler(new ResizeHandler() {
-			// Each size change will invoke a onResize(ResizeEvent).
-			// This has a huge impact on performance.
-			// Therefore the call is wrapped by a timer with a certain delay
-			// to wait before making the request.
-			final Timer resizeTimer = new Timer() {
-				@Override
-				public void run() {
-					sendPhysicalDimensions();
-				}
-			};
-
             @Override
             public void onResize(ResizeEvent resizeEvent) {
-				resizeTimer.schedule(250);
+                sendOrSchedulePhysicalDimensionsUpdate();
             }
         });
     }
 
-    
 	public TopologyView<TopologyViewRenderer> getTopologyView() {
         return m_topologyView;
     }
@@ -866,13 +864,25 @@ public class VTopologyComponent extends Composite implements SVGTopologyMap, Top
         graph.setBoundingBox(GWTBoundingBox.create(x, y, width, height));
 		setGraph(graph, oldBBox);
 
-        sendPhysicalDimensions();
+		sendOrSchedulePhysicalDimensionsUpdate();
 	}
-	
+
+    private void sendOrSchedulePhysicalDimensionsUpdate() {
+        if (m_width == 0 && m_height == 0) {
+            // Immediately update the physical bounds if they are identically 0
+            resizeTimer.run();
+        } else {
+            consoleLog("Scheduling resize.");
+            resizeTimer.schedule(250);
+        }
+    }
+
 	private void sendPhysicalDimensions() {
 		// only send physicalDimensions if they actually have changed
 		if (m_width != m_topologyView.getPhysicalWidth() || m_height != m_topologyView.getPhysicalHeight()) {
-			m_width = m_topologyView.getPhysicalWidth();
+            consoleLog("Updating physical bounds from width: " + m_width + " height: " + m_height
+                    + " to width: " + m_topologyView.getPhysicalWidth() + " height: " + m_topologyView.getPhysicalHeight());
+		    m_width = m_topologyView.getPhysicalWidth();
 			m_height = m_topologyView.getPhysicalHeight();
 			m_serverRpc.mapPhysicalBounds(m_width, m_height);
 		}
