@@ -39,6 +39,7 @@ import org.discotools.gwt.leaflet.client.types.Icon;
 import org.discotools.gwt.leaflet.client.types.IconOptions;
 import org.discotools.gwt.leaflet.client.types.LatLng;
 import org.discotools.gwt.leaflet.client.types.Point;
+import org.opennms.features.vaadin.nodemaps.internal.MapWidgetComponent;
 import org.opennms.features.vaadin.nodemaps.internal.NodeMapComponent;
 import org.opennms.features.vaadin.nodemaps.internal.gwt.client.JSNodeMarker;
 import org.opennms.features.vaadin.nodemaps.internal.gwt.client.MapNode;
@@ -108,6 +109,11 @@ public class NodeMapConnector extends AbstractComponentConnector implements HasH
         }
         if (stateChangeEvent.hasPropertyChanged("groupByState")) {
             getWidget().setGroupByState(getState().groupByState);
+        }
+        if (!getWidget().isInitialized()
+                && stateChangeEvent.hasPropertyChanged("tileServerUrl")
+                && stateChangeEvent.hasPropertyChanged("tileLayerOptions")) {
+            getWidget().initialize(getState());
         }
     }
 
